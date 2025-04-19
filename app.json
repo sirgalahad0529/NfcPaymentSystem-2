@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "NFC Payment System",
-    "slug": "nfc-payment-system-1",
+    "name": "NFC Payment System v01",
+    "slug": "nfc-payment-system-v01",
     "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.svg",
@@ -55,7 +55,7 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "bc54b452-073f-43f9-a171-87927c435b34"
+        "projectId": "2627e24d-ccf5-4911-9d90-219a423fc547"
       }
     },
     "runtimeVersion": "1.0.0",
