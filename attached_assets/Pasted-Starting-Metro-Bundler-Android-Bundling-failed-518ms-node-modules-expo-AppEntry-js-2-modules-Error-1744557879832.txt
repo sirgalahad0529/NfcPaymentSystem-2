@@ -1,0 +1,30 @@
+Starting Metro Bundler
+Android Bundling failed 518ms node_modules/expo/AppEntry.js (2 modules)
+Error: Unable to resolve module @react-navigation/stack from /home/expo/workingdir/build/App.js: @react-navigation/stack could not be found within the project or in these directories:
+  node_modules
+[0m [90m 2 |[39m [36mimport[39m { [33mStyleSheet[39m[33m,[39m [33mStatusBar[39m[33m,[39m [33mView[39m[33m,[39m [33mText[39m } [36mfrom[39m [32m'react-native'[39m[33m;[39m
+ [90m 3 |[39m [36mimport[39m { [33mNavigationContainer[39m } [36mfrom[39m [32m'@react-navigation/native'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 4 |[39m [36mimport[39m { createStackNavigator } [36mfrom[39m [32m'@react-navigation/stack'[39m[33m;[39m
+ [90m   |[39m                                       [31m[1m^[22m[39m
+ [90m 5 |[39m
+ [90m 6 |[39m [90m// Import screens[39m
+ [90m 7 |[39m [36mimport[39m [33mHomeScreen[39m [36mfrom[39m [32m'./src/screens/HomeScreen'[39m[33m;[39m[0m
+Error: Unable to resolve module @react-navigation/stack from /home/expo/workingdir/build/App.js: @react-navigation/stack could not be found within the project or in these directories:
+  node_modules
+[0m [90m 2 |[39m [36mimport[39m { [33mStyleSheet[39m[33m,[39m [33mStatusBar[39m[33m,[39m [33mView[39m[33m,[39m [33mText[39m } [36mfrom[39m [32m'react-native'[39m[33m;[39m
+ [90m 3 |[39m [36mimport[39m { [33mNavigationContainer[39m } [36mfrom[39m [32m'@react-navigation/native'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 4 |[39m [36mimport[39m { createStackNavigator } [36mfrom[39m [32m'@react-navigation/stack'[39m[33m;[39m
+ [90m   |[39m                                       [31m[1m^[22m[39m
+ [90m 5 |[39m
+ [90m 6 |[39m [90m// Import screens[39m
+ [90m 7 |[39m [36mimport[39m [33mHomeScreen[39m [36mfrom[39m [32m'./src/screens/HomeScreen'[39m[33m;[39m[0m
+    at ModuleResolver.resolveDependency (/home/expo/workingdir/build/node_modules/metro/src/node-haste/DependencyGraph/ModuleResolution.js:139:15)
+    at DependencyGraph.resolveDependency (/home/expo/workingdir/build/node_modules/metro/src/node-haste/DependencyGraph.js:277:43)
+    at Object.resolve (/home/expo/workingdir/build/node_modules/metro/src/lib/transformHelpers.js:173:21)
+    at Graph._resolveDependencies (/home/expo/workingdir/build/node_modules/metro/src/DeltaBundler/Graph.js:482:35)
+    at Graph._processModule (/home/expo/workingdir/build/node_modules/metro/src/DeltaBundler/Graph.js:267:38)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at Graph._addDependency (/home/expo/workingdir/build/node_modules/metro/src/DeltaBundler/Graph.js:378:20)
+    at async Promise.all (index 2)
+    at Graph._processModule (/home/expo/workingdir/build/node_modules/metro/src/DeltaBundler/Graph.js:328:5)
+    at Graph._traverseDependenciesForSingleFile (/home/expo/workingdir/build/node_modules/metro/src/DeltaBundler/Graph.js:255:5)

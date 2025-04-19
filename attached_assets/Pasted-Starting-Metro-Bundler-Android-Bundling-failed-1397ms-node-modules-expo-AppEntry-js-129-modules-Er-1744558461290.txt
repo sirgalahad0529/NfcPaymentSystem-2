@@ -1,0 +1,30 @@
+Starting Metro Bundler
+Android Bundling failed 1397ms node_modules/expo/AppEntry.js (129 modules)
+Error: Unable to resolve module zod from /home/expo/workingdir/build/src/screens/PaymentDetailsScreen.js: zod could not be found within the project or in these directories:
+  node_modules
+[0m [90m 15 |[39m [36mimport[39m { transactionAPI } [36mfrom[39m [32m'../api/api'[39m[33m;[39m
+ [90m 16 |[39m [36mimport[39m { formatCurrency } [36mfrom[39m [32m'../utils/formatters'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 17 |[39m [36mimport[39m { z } [36mfrom[39m [32m'zod'[39m[33m;[39m
+ [90m    |[39m                    [31m[1m^[22m[39m
+ [90m 18 |[39m [36mimport[39m { useForm[33m,[39m [33mController[39m } [36mfrom[39m [32m'react-hook-form'[39m[33m;[39m
+ [90m 19 |[39m [36mimport[39m { zodResolver } [36mfrom[39m [32m'@hookform/resolvers/zod'[39m[33m;[39m
+ [90m 20 |[39m[0m
+Error: Unable to resolve module zod from /home/expo/workingdir/build/src/screens/PaymentDetailsScreen.js: zod could not be found within the project or in these directories:
+  node_modules
+[0m [90m 15 |[39m [36mimport[39m { transactionAPI } [36mfrom[39m [32m'../api/api'[39m[33m;[39m
+ [90m 16 |[39m [36mimport[39m { formatCurrency } [36mfrom[39m [32m'../utils/formatters'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 17 |[39m [36mimport[39m { z } [36mfrom[39m [32m'zod'[39m[33m;[39m
+ [90m    |[39m                    [31m[1m^[22m[39m
+ [90m 18 |[39m [36mimport[39m { useForm[33m,[39m [33mController[39m } [36mfrom[39m [32m'react-hook-form'[39m[33m;[39m
+ [90m 19 |[39m [36mimport[39m { zodResolver } [36mfrom[39m [32m'@hookform/resolvers/zod'[39m[33m;[39m
+ [90m 20 |[39m[0m
+    at ModuleResolver.resolveDependency (/home/expo/workingdir/build/node_modules/metro/src/node-haste/DependencyGraph/ModuleResolution.js:139:15)
+    at DependencyGraph.resolveDependency (/home/expo/workingdir/build/node_modules/metro/src/node-haste/DependencyGraph.js:277:43)
+    at Object.resolve (/home/expo/workingdir/build/node_modules/metro/src/lib/transformHelpers.js:173:21)
+    at Graph._resolveDependencies (/home/expo/workingdir/build/node_modules/metro/src/DeltaBundler/Graph.js:482:35)
+    at Graph._processModule (/home/expo/workingdir/build/node_modules/metro/src/DeltaBundler/Graph.js:267:38)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at Graph._addDependency (/home/expo/workingdir/build/node_modules/metro/src/DeltaBundler/Graph.js:378:20)
+    at async Promise.all (index 7)
+    at Graph._processModule (/home/expo/workingdir/build/node_modules/metro/src/DeltaBundler/Graph.js:328:5)
+    at Graph._addDependency (/home/expo/workingdir/build/node_modules/metro/src/DeltaBundler/Graph.js:378:20)

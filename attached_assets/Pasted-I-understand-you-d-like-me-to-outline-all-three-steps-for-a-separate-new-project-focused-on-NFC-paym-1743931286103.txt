@@ -1,0 +1,588 @@
+I understand you'd like me to outline all three steps for a separate new project focused on NFC payments. Let me provide you with a comprehensive guideline for setting up this project.
+NFC Payment System - New Project Plan
+Step 1: Setting up the React Native Mobile App
+Project Setup
+
+# Install React Native CLI
+npm install -g react-native-cli
+
+# Create new project
+npx react-native init NFCPaymentApp
+
+# Navigate to project
+cd NFCPaymentApp
+
+# Install dependencies
+npm install @react-native-community/async-storage react-native-nfc-manager axios react-navigation react-native-elements
+
+Project Structure
+
+NFCPaymentApp/
+├── src/
+│   ├── components/
+│   │   ├── NFCReader.js
+│   │   ├── PaymentConfirmation.js
+│   │   └── TransactionHistory.js
+│   ├── screens/
+│   │   ├── HomeScreen.js
+│   │   ├── NFCScanScreen.js
+│   │   ├── PaymentScreen.js
+│   │   └── SettingsScreen.js
+│   ├── services/
+│   │   ├── api.js
+│   │   └── nfcService.js
+│   ├── utils/
+│   │   └── paymentUtils.js
+│   └── App.js
+├── android/
+└── ios/
+
+Key Component: NFCReader Implementation
+
+// src/components/NFCReader.js
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Alert } from 'react-native';
+import NfcManager, { NfcTech, Ndef } from 'react-native-nfc-manager';
+import { Button } from 'react-native-elements';
+
+const NFCReader = ({ onScanComplete }) => {
+  const [isScanning, setIsScanning] = useState(false);
+  const [hasNFC, setHasNFC] = useState(null);
+
+  useEffect(() => {
+    const checkNFC = async () => {
+      const supported = await NfcManager.isSupported();
+      setHasNFC(supported);
+      if (supported) {
+        await NfcManager.start();
+      }
+    };
+    
+    checkNFC();
+    
+    return () => {
+      NfcManager.cancelTechnologyRequest().catch(() => {});
+    };
+  }, []);
+
+  const startScan = async () => {
+    if (!hasNFC) {
+      Alert.alert('Error', 'This device does not support NFC');
+      return;
+    }
+    
+    setIsScanning(true);
+    
+    try {
+      await NfcManager.requestTechnology(NfcTech.Ndef);
+      const tag = await NfcManager.getTag();
+      
+      // Process tag data
+      let cardId = tag.id;
+      let customerName = 'Unknown';
+      let walletType = 'generic';
+      
+      // Try to read NDEF records if available
+      if (tag.ndefMessage && tag.ndefMessage.length > 0) {
+        const ndefRecord = tag.ndefMessage[0];
+        const payload = Ndef.text.decodePayload(ndefRecord.payload);
+        
+        try {
+          // Try to parse as JSON
+          const data = JSON.parse(payload);
+          if (data.name) customerName = data.name;
+          if (data.walletType) walletType = data.walletType;
+        } catch (e) {
+          // Simple text parsing if not JSON
+          if (payload.toLowerCase().includes('gcash')) walletType = 'gcash';
+          else if (payload.toLowerCase().includes('maya')) walletType = 'maya';
+          
+          const namePart = payload.match(/name:([^,]+)/i);
+          if (namePart && namePart[1]) customerName = namePart[1].trim();
+        }
+      }
+      
+      // Prepare scan result
+      const scanResult = {
+        cardId,
+        customerName,
+        walletType,
+        timestamp: new Date().toISOString()
+      };
+      
+      // Pass result to parent
+      onScanComplete(scanResult);
+    } catch (ex) {
+      console.warn('NFC scan error:', ex);
+      Alert.alert('NFC Scan Failed', 'Please try again');
+    } finally {
+      NfcManager.cancelTechnologyRequest();
+      setIsScanning(false);
+    }
+  };
+  
+  const cancelScan = () => {
+    NfcManager.cancelTechnologyRequest().catch(() => {});
+    setIsScanning(false);
+  };
+
+  if (hasNFC === null) {
+    return <Text>Checking NFC capability...</Text>;
+  }
+  
+  if (hasNFC === false) {
+    return <Text style={styles.error}>This device does not support NFC</Text>;
+  }
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.nfcIndicator}>
+        {isScanning ? (
+          <Text style={styles.scanningText}>Scanning for NFC card...</Text>
+        ) : (
+          <Text style={styles.readyText}>Ready to scan NFC card</Text>
+        )}
+      </View>
+      
+      {isScanning ? (
+        <Button 
+          title="Cancel Scan" 
+          onPress={cancelScan}
+          buttonStyle={styles.cancelButton}
+        />
+      ) : (
+        <Button 
+          title="Start NFC Scan" 
+          onPress={startScan}
+          buttonStyle={styles.scanButton}
+        />
+      )}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  nfcIndicator: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: '#f0f0f0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  scanningText: {
+    color: '#0066ff',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  readyText: {
+    color: '#777',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  scanButton: {
+    backgroundColor: '#0066ff',
+    paddingHorizontal: 30,
+  },
+  cancelButton: {
+    backgroundColor: '#ff3333',
+    paddingHorizontal: 30,
+  },
+  error: {
+    color: 'red',
+    textAlign: 'center',
+    margin: 20,
+  }
+});
+
+export default NFCReader;
+
+Android Configuration
+
+For Android, add these to android/app/src/main/AndroidManifest.xml:
+
+<uses-permission android:name="android.permission.NFC" />
+<uses-feature android:name="android.hardware.nfc" android:required="true" />
+
+Step 2: Developing Backend Service
+Project Setup
+
+# Create directory
+mkdir nfc-payment-backend
+cd nfc-payment-backend
+
+# Initialize Node.js project
+npm init -y
+
+# Install dependencies
+npm install express cors body-parser pg dotenv bcrypt jsonwebtoken helmet morgan node-fetch
+npm install -D typescript ts-node @types/express @types/node nodemon
+
+# Initialize TypeScript
+npx tsc --init
+
+Project Structure
+
+nfc-payment-backend/
+├── src/
+│   ├── config/
+│   │   └── db.ts
+│   ├── controllers/
+│   │   ├── authController.ts
+│   │   ├── cardController.ts
+│   │   ├── customerController.ts
+│   │   └── paymentController.ts
+│   ├── middleware/
+│   │   ├── auth.ts
+│   │   └── errorHandler.ts
+│   ├── models/
+│   │   ├── cardModel.ts
+│   │   ├── customerModel.ts
+│   │   └── transactionModel.ts
+│   ├── routes/
+│   │   ├── authRoutes.ts
+│   │   ├── cardRoutes.ts
+│   │   ├── customerRoutes.ts
+│   │   └── paymentRoutes.ts
+│   ├── services/
+│   │   └── paymongoService.ts
+│   ├── types/
+│   │   └── index.ts
+│   ├── utils/
+│   │   └── logger.ts
+│   └── app.ts
+├── .env
+├── package.json
+└── tsconfig.json
+
+Key Implementation: PayMongo Integration Service
+
+// src/services/paymongoService.ts
+import fetch from 'node-fetch';
+import logger from '../utils/logger';
+
+class PaymongoService {
+  private baseUrl = 'https://api.paymongo.com/v1';
+  private apiKey: string;
+
+  constructor() {
+    if (!process.env.PAYMONGO_SECRET_KEY) {
+      throw new Error('PAYMONGO_SECRET_KEY environment variable is missing');
+    }
+    this.apiKey = process.env.PAYMONGO_SECRET_KEY;
+  }
+
+  private getAuthHeaders() {
+    const auth = Buffer.from(`${this.apiKey}:`).toString('base64');
+    return {
+      'Authorization': `Basic ${auth}`,
+      'Content-Type': 'application/json'
+    };
+  }
+
+  async createSource(
+    type: 'gcash' | 'paymaya',
+    amount: number,
+    description: string,
+    customerId: string
+  ) {
+    try {
+      const amountInCents = Math.round(amount * 100);
+      
+      const response = await fetch(`${this.baseUrl}/sources`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({
+          data: {
+            attributes: {
+              amount: amountInCents,
+              redirect: {
+                success: `${process.env.APP_URL || 'https://localhost:3000'}/payment/success`,
+                failed: `${process.env.APP_URL || 'https://localhost:3000'}/payment/failed`
+              },
+              billing: {
+                name: customerId,
+                email: `${customerId.toLowerCase()}@example.com`
+              },
+              type,
+              currency: 'PHP'
+            }
+          }
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json() as any;
+        logger.error(`PayMongo source creation error: ${JSON.stringify(errorData)}`);
+        throw new Error(`Failed to create payment source: ${errorData.errors?.[0]?.detail || 'Unknown error'}`);
+      }
+
+      const data = await response.json() as any;
+      return {
+        id: data.data.id,
+        type: data.data.attributes.type,
+        status: data.data.attributes.status,
+        clientKey: data.data.attributes.client_key,
+        checkoutUrl: data.data.attributes.redirect?.checkout_url
+      };
+    } catch (error) {
+      logger.error(`PayMongo source creation exception: ${error}`);
+      throw error;
+    }
+  }
+
+  async createPayment(sourceId: string, amount: number, description: string) {
+    try {
+      const amountInCents = Math.round(amount * 100);
+      
+      const response = await fetch(`${this.baseUrl}/payments`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({
+          data: {
+            attributes: {
+              amount: amountInCents,
+              source: {
+                id: sourceId,
+                type: 'source'
+              },
+              currency: 'PHP',
+              description
+            }
+          }
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json() as any;
+        logger.error(`PayMongo payment creation error: ${JSON.stringify(errorData)}`);
+        throw new Error(`Failed to create payment: ${errorData.errors?.[0]?.detail || 'Unknown error'}`);
+      }
+
+      const data = await response.json() as any;
+      return {
+        id: data.data.id,
+        amount: data.data.attributes.amount / 100,
+        status: data.data.attributes.status,
+        description: data.data.attributes.description,
+        fee: data.data.attributes.fee ? data.data.attributes.fee / 100 : undefined,
+        netAmount: data.data.attributes.net_amount ? data.data.attributes.net_amount / 100 : undefined
+      };
+    } catch (error) {
+      logger.error(`PayMongo payment creation exception: ${error}`);
+      throw error;
+    }
+  }
+
+  async processNFCPayment(
+    cardId: string,
+    customerName: string,
+    walletType: 'gcash' | 'paymaya' | 'generic',
+    amount: number,
+    description: string
+  ) {
+    try {
+      logger.info(`Processing NFC payment for card: ${cardId}, type: ${walletType}, amount: ${amount}`);
+      
+      // Determine payment method
+      const paymentMethod = walletType === 'maya' ? 'paymaya' : 'gcash';
+      
+      // Create source
+      const source = await this.createSource(
+        paymentMethod as 'gcash' | 'paymaya',
+        amount,
+        description,
+        cardId
+      );
+      
+      logger.info(`Created source: ${JSON.stringify(source)}`);
+      
+      // For direct payment without QR code scanning (ideal for NFC flow):
+      // 1. Create payment from the source
+      const payment = await this.createPayment(
+        source.id,
+        amount,
+        description
+      );
+      
+      logger.info(`Created payment: ${JSON.stringify(payment)}`);
+      
+      return {
+        id: payment.id,
+        amount: payment.amount,
+        status: payment.status,
+        description: payment.description,
+        fee: payment.fee,
+        netAmount: payment.netAmount,
+        source: source.id,
+        checkoutUrl: source.checkoutUrl
+      };
+    } catch (error) {
+      logger.error(`NFC payment processing error: ${error}`);
+      throw error;
+    }
+  }
+}
+
+export const paymongoService = new PaymongoService();
+
+Payment Controller Example
+
+// src/controllers/paymentController.ts
+import { Request, Response } from 'express';
+import { paymongoService } from '../services/paymongoService';
+import { transactionModel } from '../models/transactionModel';
+import logger from '../utils/logger';
+
+export const processNFCPayment = async (req: Request, res: Response) => {
+  try {
+    const { cardId, customerName, walletType, amount, description } = req.body;
+    
+    if (!cardId || !amount) {
+      return res.status(400).json({ error: 'Card ID and amount are required' });
+    }
+    
+    // Validate amount
+    const paymentAmount = parseFloat(amount);
+    if (isNaN(paymentAmount) || paymentAmount <= 0) {
+      return res.status(400).json({ error: 'Invalid amount' });
+    }
+    
+    // Process payment with PayMongo
+    const payment = await paymongoService.processNFCPayment(
+      cardId,
+      customerName || 'Customer',
+      walletType || 'generic',
+      paymentAmount,
+      description || `Payment via NFC card ${cardId}`
+    );
+    
+    // Create transaction record
+    const transaction = await transactionModel.createTransaction({
+      cardId,
+      customerName: customerName || 'Customer',
+      amount: paymentAmount.toString(),
+      fee: (payment.fee || paymentAmount * 0.02).toString(),
+      total: (paymentAmount + (payment.fee || paymentAmount * 0.02)).toString(),
+      status: payment.status,
+      paymentMethod: walletType === 'maya' ? 'Maya' : 'GCash',
+      paymentId: payment.id,
+      sourceId: payment.source,
+      createdAt: new Date()
+    });
+    
+    return res.status(200).json({
+      success: true,
+      transaction,
+      payment
+    });
+  } catch (error) {
+    logger.error(`Error processing NFC payment: ${error}`);
+    return res.status(500).json({
+      error: 'Failed to process payment',
+      message: error.message
+    });
+  }
+};
+
+Step 3: Database Schema Design
+
+Here's the SQL for creating the necessary tables:
+
+-- Create tables
+CREATE TABLE merchants (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  phone VARCHAR(20),
+  password_hash VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE customers (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  phone VARCHAR(20),
+  email VARCHAR(100),
+  merchant_id INTEGER REFERENCES merchants(id),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE nfc_cards (
+  id SERIAL PRIMARY KEY,
+  card_id VARCHAR(100) UNIQUE NOT NULL,
+  customer_id INTEGER REFERENCES customers(id),
+  wallet_type VARCHAR(20) NOT NULL, -- 'gcash', 'maya', 'generic'
+  is_active BOOLEAN DEFAULT TRUE,
+  last_used TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE transactions (
+  id SERIAL PRIMARY KEY,
+  reference_id VARCHAR(50) UNIQUE NOT NULL,
+  merchant_id INTEGER REFERENCES merchants(id),
+  customer_id INTEGER REFERENCES customers(id),
+  card_id VARCHAR(100) REFERENCES nfc_cards(card_id),
+  amount DECIMAL(10, 2) NOT NULL,
+  fee DECIMAL(10, 2) NOT NULL,
+  total DECIMAL(10, 2) NOT NULL,
+  status VARCHAR(20) NOT NULL, -- 'completed', 'pending', 'failed'
+  payment_method VARCHAR(20) NOT NULL,
+  payment_id VARCHAR(100),
+  source_id VARCHAR(100),
+  description TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+How the Three Components Work Together
+
+    Mobile App Flow
+        Merchant enters amount
+        App activates NFC reader
+        Customer taps NFC card/device
+        Mobile app reads card data and sends to backend
+        App displays payment result
+
+    Backend Processing
+        Receives NFC card data and payment details
+        Identifies customer from card ID
+        Creates PayMongo source and payment
+        Records transaction in database
+        Returns payment result to mobile app
+
+    Database Tracking
+        Stores registered NFC cards linked to customers
+        Records all transaction details
+        Maintains merchant accounts
+        Enables reporting and analytics
+
+Next Steps After Setup
+
+    Mobile App Development
+        Complete UI/UX design
+        Implement all screens
+        Add offline transaction capability
+        Implement secure storage
+
+    Backend Development
+        Set up authentication system
+        Implement webhook handlers for payment status updates
+        Create reporting API endpoints
+        Add transaction search and filtering
+
+    Database & Deployment
+        Set up production database
+        Configure automatic backups
+        Prepare staging and production environments
+        Implement monitoring and logging
+
+Would you like me to provide more details on any specific part of this implementation plan?
