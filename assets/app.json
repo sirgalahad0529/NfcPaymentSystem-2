@@ -1,0 +1,67 @@
+{
+  "expo": {
+    "name": "NFC Payment System",
+    "slug": "nfc-payment-system",
+    "version": "1.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.svg",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.svg",
+      "resizeMode": "contain",
+      "backgroundColor": "#00994c"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.nfcpayments.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.svg",
+        "backgroundColor": "#5046E5"
+      },
+      "package": "com.nfcpayments.app",
+      "permissions": [
+        "NFC",
+        "android.permission.NFC",
+        "android.permission.VIBRATE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 34,
+            "targetSdkVersion": 34,
+            "buildToolsVersion": "34.0.0",
+            "minSdkVersion": 21,
+            "kotlinVersion": "1.8.0"
+          }
+        }
+      ],
+      [
+        "react-native-nfc-manager",
+        {
+          "androidPermission": "Allow NFC scanning"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "48a2cff7-148c-4848-8b88-01a79af5f722"
+      }
+    },
+    "runtimeVersion": "1.0.0",
+    "updates": {
+      "url": "https://u.expo.dev/48a2cff7-148c-4848-8b88-01a79af5f722"
+    },
+    "owner": "sir_galahad"
+  }
+}
