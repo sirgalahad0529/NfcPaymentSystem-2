@@ -1,40 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background circle -->
   <rect width="1024" height="1024" rx="512" fill="#5046E5"/>
-  
-  <!-- NFC Icon elements -->
   <g transform="translate(180, 180) scale(0.65)">
-    <!-- Credit card shape with gradient -->
-    <rect x="50" y="250" width="900" height="550" rx="60" fill="url(#cardGradient)" stroke="white" stroke-width="20"/>
-    
-    <!-- NFC Wave 1 (large) -->
-    <path d="M300 280 Q500 50, 700 280" stroke="white" stroke-width="25" fill="none" stroke-linecap="round"/>
-    
-    <!-- NFC Wave 2 (medium) -->
-    <path d="M350 350 Q500 180, 650 350" stroke="white" stroke-width="25" fill="none" stroke-linecap="round"/>
-    
-    <!-- NFC Wave 3 (small) -->
-    <path d="M400 400 Q500 300, 600 400" stroke="white" stroke-width="25" fill="none" stroke-linecap="round"/>
-    
-    <!-- Chip -->
-    <rect x="200" y="500" width="150" height="120" rx="20" fill="#FFD700" stroke="white" stroke-width="8"/>
-    
-    <!-- Card details/lines -->
-    <rect x="400" y="500" width="400" height="40" rx="10" fill="white" opacity="0.7"/>
-    <rect x="400" y="580" width="300" height="40" rx="10" fill="white" opacity="0.7"/>
-    
-    <!-- Small circles pattern -->
-    <circle cx="800" cy="650" r="50" fill="white" opacity="0.3"/>
-    <circle cx="700" cy="700" r="40" fill="white" opacity="0.3"/>
-    <circle cx="750" cy="600" r="30" fill="white" opacity="0.3"/>
+    <rect x="50" y="250" width="900" height="550" rx="60" fill="#00994c" stroke="white" stroke-width="20"/>
+    <circle cx="500" cy="525" r="225" fill="none" stroke="white" stroke-width="40" stroke-dasharray="80,40"/>
+    <rect x="425" y="450" width="150" height="150" rx="10" fill="white" />
   </g>
-  
-  <!-- Definitions -->
-  <defs>
-    <linearGradient id="cardGradient" x1="0" y1="0" x2="1000" y2="1000" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#6C63FF"/>
-      <stop offset="100%" stop-color="#3632A8"/>
-    </linearGradient>
-  </defs>
 </svg>

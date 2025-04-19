@@ -1,68 +1,27 @@
 {
   "cli": {
-    "version": ">= 3.13.3",
-    "requireCommit": false
+    "version": ">= 5.9.1"
   },
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal",
-      "android": {
-        "buildType": "apk",
-        "gradleCommand": ":app:assembleDebug",
-        "image": "latest"
-      },
-      "env": {
-        "EXPO_PUBLIC_API_URL": "https://9ee52b2c-3d78-4378-85db-1fd4fe6af636-00-ev6imnki6tu3.pike.replit.dev/api"
-      }
+      "distribution": "internal"
     },
     "preview": {
-      "distribution": "internal",
       "android": {
-        "buildType": "apk",
-        "gradleCommand": ":app:assembleRelease",
-        "image": "latest"
-      },
-      "env": {
-        "EXPO_PUBLIC_API_URL": "https://9ee52b2c-3d78-4378-85db-1fd4fe6af636-00-ev6imnki6tu3.pike.replit.dev/api"
-      },
-      "channel": "preview"
-    },
-    "production": {
-      "autoIncrement": true,
-      "android": {
-        "buildType": "app-bundle"
+        "buildType": "apk"
       }
     },
     "simple": {
-      "distribution": "internal",
       "android": {
         "buildType": "apk",
-        "image": "latest",
-        "withoutCredentials": true
+        "image": "ubuntu-22.04-jdk-11-ndk-r23b"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://9ee52b2c-3d78-4378-85db-1fd4fe6af636-00-ev6imnki6tu3.pike.replit.dev/api",
-        "npm_config_legacy_peer_deps": "true",
-        "EXPO_PUBLIC_ENABLE_REACT_NATIVE_STRICT_MODE": "0"
-      },
-      "channel": "simple"
+        "EXPO_IMAGE_UTILS_NO_SHARP": "1"
+      }
     },
-    "fixed": {
-      "distribution": "internal",
-      "android": {
-        "buildType": "apk",
-        "gradleCommand": ":app:assembleRelease",
-        "image": "latest",
-        "withoutCredentials": true
-      },
-      "env": {
-        "EXPO_PUBLIC_API_URL": "https://9ee52b2c-3d78-4378-85db-1fd4fe6af636-00-ev6imnki6tu3.pike.replit.dev/api",
-        "npm_config_legacy_peer_deps": "true",
-        "EXPO_PUBLIC_ENABLE_REACT_NATIVE_STRICT_MODE": "0"
-      },
-      "channel": "fixed"
-    }
+    "production": {}
   },
   "submit": {
     "production": {}
