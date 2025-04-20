@@ -1,1 +1,12 @@
+# macOS system files
+.DS_Store
+
+# Expo
+.expo/
+
+# Node
+node_modules/
+
+# Android and iOS folders (if generated locally only)
+android/
 ios/
