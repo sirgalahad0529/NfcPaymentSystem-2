@@ -11,9 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#00994c"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.nfcpayments.app"
@@ -44,12 +42,6 @@
             "minSdkVersion": 21,
             "kotlinVersion": "1.8.0"
           }
-        }
-      ],
-      [
-        "react-native-nfc-manager",
-        {
-          "androidPermission": "Allow NFC scanning"
         }
       ]
     ],
